@@ -1,25 +1,48 @@
 #!/bin/bash
-array=()
-array2=()
+array1=(0 0 0 0 0)
+array2=(0 0 0 0 0)
+array3=(0 0 0 0 0)
+array4=(0 0 0 0 0)
+array5=(0 0 0 0 0)
+array=(array1 array2 array3 array4 array5)
+
+n=5
+i=0
+j=-1
 k=1
-for((j=1; j<26; j++))
+num=1
+while [ $num -lt 26 ]
 do
-	array+=("$j")
-	if [[ `expr $j % 5` = 0 ]]
+	for l in $(seq 1 $n)
+	do
+		j=`expr $j + $k`
+		record=${array[$i]}
+		let $record[$j]=$num
+		num=`expr $num + 1`
+	done
+	n=`expr $n - 1`
+	if [ ${n} -eq 0 ];
 	then
-		if [[ `expr $k % 2` = 0 ]]
-		then
-			for((l=5; l>0; l--))
-			do
-				num=${array[`expr $l - 1`]}
-				array2+=("$num")
-			done
-			echo ${array2[@]}
-			array2=()
-		else
-			echo ${array[@]}
-		fi
-		array=()
-		k=`expr $k + 1`
+		break;
 	fi
+	for l in $(seq 1 $n)
+	do
+		i=`expr $i + $k`
+		record=${array[$i]}
+		let $record[$j]=$num
+		num=`expr $num + 1`
+	done		
+	k=`expr $k*-1|bc`
+done
+
+for((i=0; i<${#array[*]}; ++i))
+do
+        Line=${array[i]}[*]
+        Line=(${!Line})
+        for((j=0; j<${#Line[*]}; ++j))
+        do
+                printf "${Line[j]} "
+        done
+        echo
+
 done
